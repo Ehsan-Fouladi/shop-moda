@@ -1,0 +1,387 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/IRANSansWeb_Black.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url("/fonts/IRANSansWeb_Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/IRANSansWeb_Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/IRANSansWeb_Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url("/fonts/IRANSansWeb_UltraLight.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url("/fonts/IRANSansWeb.woff2") format("woff2");
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/* v3 parity: centered, 1rem padding, max 1360px (was theme.container in tailwind.config.ts).
+   `@utility container` extends Tailwind's built-in container, whose per-breakpoint max-widths
+   (40rem…96rem) would otherwise still apply; v3 only capped it at 1360px, so reset them here.
+   The old config also listed sm/lg paddings, but v3 only emits responsive container padding for
+   breakpoints present in `container.screens` (overridden to 2xl only), so the rendered padding
+   was 1rem at every width — verified against the pre-upgrade build. */
+@utility container {
+  width: 100%;
+  max-width: none;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 1360px) {
+    max-width: 1360px;
+  }
+}
+
+/* v3 parity for `space-y-*`. Tailwind v4 changed it to `margin-block-end` on every child but the
+   last; that margin is ignored on inline children (e.g. <label>), which removed label→input gaps.
+   Restore v3's rule: margin-top on each following sibling (same selector/specificity as v3), and
+   neutralise v4's bottom margin. The core rule is `:where()` (specificity 0) and is emitted after
+   custom utilities, so the reset uses `:is(html *)` (matches every element, specificity 0-0-1): it
+   beats the core rule regardless of order while a child's own `mb-*` (0-1-0) still wins. */
+@utility space-y-* {
+  :where(& > :not(:last-child)):is(html *) {
+    margin-block-end: 0;
+  }
+  & > :not([hidden]) ~ :not([hidden]) {
+    margin-block-start: calc(var(--spacing) * --value(number));
+  }
+}
+
+@theme {
+  --font-sans: IRANSans, Vazirmatn, Segoe UI, Tahoma, sans-serif;
+
+  /* v3 parity: v3's default scale used fixed line-heights (rem), v4 uses unitless ratios. A ratio is
+     inherited as a ratio, so smaller-font children (badges, counters) got shorter line boxes than
+     before (e.g. checkout address cards 4px shorter). Restore the v3 values for the sizes in use;
+     each size's own rendered line-height is unchanged. */
+  --text-xs--line-height: 1rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl--line-height: 2.25rem;
+
+  --text-display: 2.5rem;
+  --text-display--line-height: 1.35;
+  --text-display--font-weight: 700;
+  --text-h1: 1.75rem;
+  --text-h1--line-height: 1.5;
+  --text-h1--font-weight: 700;
+  --text-h2: 1.375rem;
+  --text-h2--line-height: 1.6;
+  --text-h2--font-weight: 700;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.7;
+  --text-h3--font-weight: 500;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.9;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.7;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.6;
+  --text-label--font-weight: 500;
+  --text-price: 1.125rem;
+  --text-price--line-height: 1.4;
+  --text-price--font-weight: 700;
+
+  --spacing-section: 3.5rem;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-surface-elevated: hsl(var(--surface-elevated));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+
+  --color-sale: hsl(var(--sale));
+  --color-sale-foreground: hsl(var(--sale-foreground));
+
+  --color-rating: hsl(var(--rating));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --shadow-card:
+    0 1px 2px 0 rgb(16 12 14 / 0.04), 0 4px 16px -4px rgb(16 12 14 / 0.06);
+  --shadow-card-hover:
+    0 2px 4px 0 rgb(16 12 14 / 0.05), 0 12px 28px -8px rgb(16 12 14 / 0.12);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in: fade-in 0.3s ease-out both;
+
+  /* Radix measures the content height only after hydration. Until then the variable is undefined,
+     the calc() is invalid and the start frame falls back to auto, so server-rendered open items
+     paint at full height instead of collapsing to 0 (layout shift). */
+  @keyframes accordion-down {
+    from {
+      height: calc(var(--radix-accordion-content-height) * 0);
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility no-scrollbar {
+  /* Hide scrollbar but keep functionality (carousels, filter chips) */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility product-surface {
+  /* Product image surfaces stay neutral in both themes so imagery is accurate */
+  @apply bg-muted/60 dark:bg-surface-elevated;
+}
+
+/*
+ * مُدا (Moda) — Design Tokens
+ * One brand, two intentional themes (Light / Dark).
+ * All colors are theme-aware HSL tokens; components must never hard-code colors.
+ */
+
+@layer base {
+  :root {
+    /* Surfaces */
+    --background: 40 33% 98.5%;
+    --foreground: 30 8% 13%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 30 8% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 8% 13%;
+
+    --surface-elevated: 0 0% 100%;
+
+    /* Brand */
+    --primary: 340 68% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 340 28% 96%;
+    --secondary-foreground: 340 45% 26%;
+
+    --muted: 32 14% 95.5%;
+    --muted-foreground: 30 5% 43%;
+
+    --accent: 340 42% 95%;
+    --accent-foreground: 340 50% 30%;
+
+    /* States */
+    --destructive: 4 72% 45.5%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 52% 30%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 46%;
+    --warning-foreground: 32 45% 12%;
+
+    --info: 205 74% 39%;
+    --info-foreground: 0 0% 100%;
+
+    /* Commerce-specific */
+    --sale: 4 82% 45%;
+    --sale-foreground: 0 0% 100%;
+    --rating: 42 96% 50%;
+
+    /* Lines & focus */
+    --border: 32 14% 89%;
+    --input: 32 12% 86%;
+    --ring: 340 68% 36%;
+
+    /* Shape */
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    /* Layered dark surfaces — deliberately designed, not inverted light */
+    --background: 250 8% 8.5%;
+    --foreground: 32 10% 93%;
+
+    --card: 250 7% 12%;
+    --card-foreground: 32 10% 93%;
+
+    --popover: 250 7% 12.5%;
+    --popover-foreground: 32 10% 93%;
+
+    --surface-elevated: 250 6% 16%;
+
+    /* Brand — brighter berry so it stays vivid & accessible on dark */
+    --primary: 340 66% 62%;
+    --primary-foreground: 250 30% 8%;
+
+    --secondary: 250 6% 19%;
+    --secondary-foreground: 32 10% 90%;
+
+    --muted: 250 6% 16.5%;
+    --muted-foreground: 250 5% 62%;
+
+    --accent: 340 28% 20%;
+    --accent-foreground: 340 65% 82%;
+
+    --destructive: 354 68% 65.5%;
+    --destructive-foreground: 354 60% 8%;
+
+    --success: 152 42% 48%;
+    --success-foreground: 150 60% 8%;
+
+    --warning: 40 88% 56%;
+    --warning-foreground: 32 45% 10%;
+
+    --info: 205 72% 56%;
+    --info-foreground: 210 60% 8%;
+
+    --sale: 354 78% 64.5%;
+    --sale-foreground: 354 60% 8%;
+    --rating: 42 92% 58%;
+
+    --border: 250 6% 21%;
+    --input: 250 6% 24%;
+    --ring: 340 66% 62%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  /* v3 preflight parity: Tailwind 4 resets buttons to cursor: default */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* v3 preflight parity: placeholder colour was gray-400 */
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-primary/15;
+  }
+}
