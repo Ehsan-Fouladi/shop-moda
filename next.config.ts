@@ -19,7 +19,7 @@ export default {
   reactStrictMode: isDevelopment,
   poweredByHeader: isDevelopment,
   reactCompiler: true,
-  basePath: isDevelopment ? "" : "/shop-moda",
-  output: "export",
+  // basePath: isDevelopment ? "" : "/shop-moda",
+  // output: "export",
   // cacheComponents: true,
 } as NextConfig;
