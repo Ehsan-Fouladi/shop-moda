@@ -49,7 +49,7 @@ export function HeroCarousel({
   label,
   slides,
   aside,
-  interval = 3000,
+  interval = 4000,
 }: HeroCarouselProps) {
   const count = slides.length;
   const [index, setIndex] = useState(0);

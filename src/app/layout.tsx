@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
 import { getInitialCart } from "@/features/cart/data/seed-cart";
 import { getInitialWishlist } from "@/features/wishlist/data/seed-wishlist";
+import SmoothScroll from "@/components/providers/SmoothScroll";
 
 import "@/app/globals.css";
 
@@ -66,12 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="fa"
-      dir="rtl"
-      translate="no"
-      suppressHydrationWarning
-    >
+    <html lang="fa" dir="rtl" translate="no" suppressHydrationWarning>
       <body className="min-h-dvh">
         <ThemeProvider
           attribute="class"
@@ -90,7 +86,7 @@ export default function RootLayout({
             initialCart={getInitialCart()}
             initialWishlist={getInitialWishlist()}
           >
-            {children}
+            <SmoothScroll>{children}</SmoothScroll>
           </Providers>
           <Toaster position="bottom-right" richColors closeButton />
         </ThemeProvider>
