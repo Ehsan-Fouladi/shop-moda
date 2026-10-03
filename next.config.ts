@@ -9,13 +9,17 @@ export default {
   },
   experimental: {
     turbopackRustReactCompiler: true,
+    optimizePackageImports: ["lucide-react", "lenis"],
   },
   images: {
     formats: ["image/webp"],
+    unoptimized: !isDevelopment,
   },
   productionBrowserSourceMaps: isDevelopment,
   reactStrictMode: isDevelopment,
   poweredByHeader: isDevelopment,
   reactCompiler: true,
+  basePath: isDevelopment ? "" : "/shop-moda",
+  output: "export",
   // cacheComponents: true,
 } as NextConfig;
