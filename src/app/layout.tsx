@@ -71,7 +71,6 @@ export default function RootLayout({
       dir="rtl"
       translate="no"
       suppressHydrationWarning
-      data-scroll-behavior="smooth"
     >
       <body className="min-h-dvh">
         <ThemeProvider
